@@ -1,20 +1,9 @@
+// middleware/verifyToken.js
 const jwt = require('jsonwebtoken');
+const Auth = require('../models/authModel'); // Import the Auth model
 
-exports.verifyToken = (req, res, next) => {
-  // Skip token verification for login, static files, and favicon
-  if (
-    req.originalUrl.startsWith('/api/auth/login') ||
-    req.originalUrl.startsWith('/image') ||
-    req.originalUrl.startsWith('/css') ||
-    req.originalUrl.startsWith('/js') ||
-    req.originalUrl === '/favicon.ico'
-  ) {
-    return next(); // Skip token verification
-  }
-
-  console.log('Cookies:', req.cookies); // Log cookies to debug
-
-  const token = req.cookies.authToken; // Token is expected in the cookies
+exports.verifyToken = async (req, res, next) => {
+  const token = req.cookies.authToken;
 
   if (!token) {
     console.log('No token provided.');
@@ -22,11 +11,16 @@ exports.verifyToken = (req, res, next) => {
   }
 
   try {
-    // Verify token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.adminId = decoded.adminId; // Attach decoded adminId to the request
+    // Check tokenVersion by fetching the admin from DB
+    const admin = await Auth.findById(decoded.adminId);
+    if (!admin || admin.tokenVersion !== decoded.tokenVersion) {
+      console.log('Invalid token: token version mismatch');
+      return res.status(401).send('Invalid Token.');
+    }
+    req.adminId = decoded.adminId;
     console.log('Admin ID from token:', req.adminId);
-    next(); // Proceed to the next middleware/route
+    next();
   } catch (err) {
     console.log('Invalid Token:', err.message);
     return res.status(400).send('Invalid Token.');
