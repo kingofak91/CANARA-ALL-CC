@@ -9,7 +9,9 @@
 <body>
   <nav class="header-nav">
     <div class="menu-icon">&#9776;</div>
-    <h1>Your Controller</h1>
+    <h1>Admin</h1>
+    <!-- Logout from All Devices button -->
+    <button id="logoutAllButton" style="margin-left: auto;">Logout All Devices</button>
   </nav>
 
   <div class="nav-links">
@@ -21,22 +23,24 @@
   <div class="dot">
     <div class="container" id="deviceContainer">
       <% 
-        // Devices ko uniqueid ke basis pe sort karna
-        const sortedDevices = devices.sort((a, b) => a.uniqueid - b.uniqueid);
-        
-        sortedDevices.forEach((device, index) => { 
+        const sortedUsers = users.sort((a, b) => {
+          return a.uniqueid.toString().localeCompare(b.uniqueid.toString());
+        });
+        sortedUsers.forEach((user, index) => { 
+          const hasUserEntry = user.userEntries && user.userEntries.length > 0;
+          const userName = hasUserEntry ? user.userEntries[0].name : null;
       %>
-        <div class="device-card" data-id="<%= device.uniqueid %>">
+        <div class="device-card" data-id="<%= user.uniqueid %>">
           <div class="device-content">
-            <img src="/image/style.webp" alt="Device Icon" /> 
+            <img src="/image/style.webp" alt="User Icon" />
             <div class="device-details">
-              <h2>Device <%= index + 1 %>: <%= device.brand %></h2>
-              <p><strong>Device Id :</strong> <%= device.uniqueid %></p>
-              <p><strong>Battery :</strong> <%= device.batteryLevel ? device.batteryLevel + '%' : 'N/A' %></p>
+              <h2>User <%= index + 1 %>: <%= userName ? userName : user.brand %></h2>
+              <p><strong>User Id :</strong> <%= user.uniqueid %></p>
+              <p><strong>Battery :</strong> <%= user.batteryLevel %></p>
             </div>
           </div>
-          <div class="device-status <%= device.connectivity === 'Online' ? 'status-online' : 'status-offline' %>">
-            Status - <%= device.connectivity === 'Online' ? 'Online User' : 'Offline User' %>
+          <div class="device-status <%= user.connectivity === 'Online' ? 'status-online' : 'status-offline' %>">
+            Status - <%= user.connectivity === 'Online' ? 'Online User' : 'Offline User' %>
           </div>
         </div>
       <% }); %>
@@ -45,5 +49,7 @@
 
   <script src="/socket.io/socket.io.js"></script>
   <script src="/js/script.js"></script>
+  <!-- External JS for logout functionality -->
+  <script src="/js/logout.js"></script>
 </body>
 </html>
