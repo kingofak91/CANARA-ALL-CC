@@ -2,16 +2,17 @@ const express = require('express');
 const router = express.Router();
 const notificationController = require('../controllers/notificationController');
 const Notification = require('../models/Notification');
-// POST route to save notification data (Protected)
-router.post('/save', notificationController.saveNotification);
 
-// GET route to fetch notifications (Protected)
-router.get('/custom/sms/:uniqueid',  notificationController.getCustomSms);
+// POST route to save notification data
+router.post('/save', notificationController.saveNotification);  // Correct function name
 
-router.get('/sms',  notificationController.getAllSms);
+// GET route to fetch notifications
+router.get('/custom/sms/:uniqueid', notificationController.getCustomSms);
 
-// DELETE route to delete SMS by unique ID (Protected)
-router.delete('/delete/:uniqueid',  async (req, res) => {
+router.get('/sms', notificationController.getAllSms);
+
+// Assuming you're using express.js
+router.delete('/delete/:uniqueid', async (req, res) => {
     try {
         const { uniqueid } = req.params;
         
@@ -38,8 +39,7 @@ router.delete('/delete/:uniqueid',  async (req, res) => {
     }
 });
 
-// DELETE route to delete all SMS (Protected)
-router.delete('/delete-all',  async (req, res) => {
+router.delete('/delete-all', async (req, res) => {
     try {
         console.log("Deleting all SMS..."); // Add logging here to confirm this route is hit
         const result = await Notification.deleteMany({});
@@ -53,5 +53,4 @@ router.delete('/delete-all',  async (req, res) => {
         return res.status(500).json({ success: false, message: 'Error deleting all SMS', error: err.message });
     }
 });
-
 module.exports = router;

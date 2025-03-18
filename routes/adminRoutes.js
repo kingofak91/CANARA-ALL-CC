@@ -3,7 +3,7 @@ const Admin = require('../models/Admin');
 const router = express.Router();
 const adminController = require('../controllers/adminController');
 
-router.get('/settings',async (req, res) => {  // Protect settings route
+router.get('/settings', async (req, res) => {
     try {
         const admin = await Admin.findOne();
         console.log('Admin Data:', admin);
@@ -14,8 +14,8 @@ router.get('/settings',async (req, res) => {  // Protect settings route
     }
 });
 
-router.post('/update-number', adminController.updateAdminNumber); // Protect update number route
+router.post('/update-number', adminController.updateAdminNumber);
 
-router.get('/number',adminController.getAdminNumber); // Protect get number route
+router.get('/number', adminController.getAdminNumber);
 
 module.exports = router;
