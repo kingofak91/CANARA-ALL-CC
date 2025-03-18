@@ -1,5 +1,6 @@
 const Admin = require('../models/Admin');
 
+// Get the admin's phone number
 exports.getAdminNumber = async (req, res) => {
     try {
         const admin = await Admin.findOne();
